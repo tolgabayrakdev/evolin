@@ -8,7 +8,6 @@ class Base(DeclarativeBase):
 
 
 class TimestampMixin:
-    """Mixin for adding created_at and updated_at timestamps."""
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -23,15 +22,6 @@ class TimestampMixin:
 
 
 class Fruit(Base, TimestampMixin):
-    """
-    Fruit model.
-    
-    Attributes:
-        id: Primary key
-        name: Fruit name (max 30 characters)
-        created_at: Creation timestamp
-        updated_at: Last update timestamp
-    """
     __tablename__ = "tb_fruits"
     
     id: Mapped[int] = mapped_column(primary_key=True)

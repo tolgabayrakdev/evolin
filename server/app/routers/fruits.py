@@ -1,8 +1,5 @@
-"""
-Fruit API routes.
-"""
 from typing import List
-from fastapi import APIRouter, Depends, status, HTTPException, Query
+from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..services.fruits import FruitService
@@ -13,18 +10,6 @@ router = APIRouter()
 
 
 def get_service(db: Session = Depends(get_db)) -> FruitService:
-    """
-    Dependency to get FruitService instance.
-    
-    Args:
-        db: Database session
-        
-    Returns:
-        FruitService instance
-        
-    Raises:
-        HTTPException: If database connection is not available
-    """
     try:
         return FruitService(db)
     except ConnectionError:
@@ -36,29 +21,12 @@ async def create_fruit(fruit: FruitCreate, service: FruitService = Depends(get_s
     return service.create_fruit(fruit)
 
 
-@router.get(
-    "/fruits",
-    response_model=List[FruitResponse],
-    tags=["fruits"],
-    summary="Get all fruits",
-    description="Retrieve a list of all fruits with pagination"
-)
+@router.get("/fruits", response_model=List[FruitResponse], tags=["fruits"])
 async def get_fruits(
-    skip: int = Query(0, ge=0, description="Number of records to skip"),
-    limit: int = Query(100, ge=1, le=1000, description="Maximum number of records to return"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(100, ge=1, le=1000),
     service: FruitService = Depends(get_service)
 ):
-    """
-    Get all fruits with pagination.
-    
-    Args:
-        skip: Number of records to skip (for pagination)
-        limit: Maximum number of records to return
-        service: FruitService dependency
-        
-    Returns:
-        List of fruits
-    """
     return service.get_all_fruits(skip=skip, limit=limit)
 
 

@@ -1,6 +1,3 @@
-"""
-Database configuration and session management.
-"""
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -13,10 +10,10 @@ try:
     engine = create_engine(
         settings.database_url,
         echo=settings.database_echo,
-        pool_pre_ping=True,  # Bağlantıyı kullanmadan önce kontrol eder
-        pool_size=10,  # Connection pool size
-        max_overflow=20,  # Maximum overflow connections
-        connect_args={"connect_timeout": 5}  # 5 saniye timeout
+        pool_pre_ping=True,
+        pool_size=10,
+        max_overflow=20,
+        connect_args={"connect_timeout": 5}
     )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     logger.info("Database engine created successfully")

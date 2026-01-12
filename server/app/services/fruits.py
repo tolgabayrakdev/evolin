@@ -1,6 +1,3 @@
-"""
-Fruit service layer with business logic.
-"""
 import logging
 from typing import List
 from sqlalchemy.orm import Session
@@ -9,38 +6,16 @@ from ..models import Fruit
 from ..repositories.fruits import FruitRepository
 from ..schemas.fruits import FruitCreate, FruitUpdate
 from ..core.exceptions import raise_not_found, raise_service_unavailable
+from ..core.transaction import transaction
 
 logger = logging.getLogger(__name__)
 
 
 class FruitService:
-    """
-    Service layer for Fruit operations.
-    Handles business logic and error handling.
-    """
-
     def __init__(self, db: Session):
-        """
-        Initialize service with database session.
-        
-        Args:
-            db: Database session
-        """
         self.repository = FruitRepository(db)
 
     def create_fruit(self, fruit_data: FruitCreate) -> Fruit:
-        """
-        Create a new fruit.
-        
-        Args:
-            fruit_data: Fruit creation data
-            
-        Returns:
-            Created fruit instance
-            
-        Raises:
-            HTTPException: If database operation fails
-        """
         try:
             fruit = Fruit(name=fruit_data.name)
             return self.repository.create(fruit)
@@ -49,18 +24,6 @@ class FruitService:
             raise raise_service_unavailable("Database service is currently unavailable")
 
     def get_fruit_by_id(self, fruit_id: int) -> Fruit:
-        """
-        Get fruit by ID.
-        
-        Args:
-            fruit_id: Fruit ID
-            
-        Returns:
-            Fruit instance
-            
-        Raises:
-            HTTPException: If fruit not found or database error
-        """
         try:
             fruit = self.repository.get_by_id(fruit_id)
             if not fruit:
@@ -71,19 +34,6 @@ class FruitService:
             raise raise_service_unavailable("Database service is currently unavailable")
 
     def get_all_fruits(self, skip: int = 0, limit: int = 100) -> List[Fruit]:
-        """
-        Get all fruits with pagination.
-        
-        Args:
-            skip: Number of records to skip
-            limit: Maximum number of records to return
-            
-        Returns:
-            List of fruit instances
-            
-        Raises:
-            HTTPException: If database operation fails
-        """
         try:
             return self.repository.get_all(skip=skip, limit=limit)
         except SQLAlchemyError as e:
@@ -91,19 +41,6 @@ class FruitService:
             raise raise_service_unavailable("Database service is currently unavailable")
 
     def update_fruit(self, fruit_id: int, fruit_data: FruitUpdate) -> Fruit:
-        """
-        Update an existing fruit.
-        
-        Args:
-            fruit_id: Fruit ID
-            fruit_data: Fruit update data
-            
-        Returns:
-            Updated fruit instance
-            
-        Raises:
-            HTTPException: If fruit not found or database error
-        """
         try:
             fruit = self.repository.get_by_id(fruit_id)
             if not fruit:
@@ -115,15 +52,6 @@ class FruitService:
             raise raise_service_unavailable("Database service is currently unavailable")
 
     def delete_fruit(self, fruit_id: int) -> None:
-        """
-        Delete a fruit.
-        
-        Args:
-            fruit_id: Fruit ID
-            
-        Raises:
-            HTTPException: If fruit not found or database error
-        """
         try:
             fruit = self.repository.get_by_id(fruit_id)
             if not fruit:
@@ -131,4 +59,35 @@ class FruitService:
             self.repository.delete(fruit)
         except SQLAlchemyError as e:
             logger.error(f"Database error in delete_fruit: {e}")
+            raise raise_service_unavailable("Database service is currently unavailable")
+
+    def create_multiple_fruits(self, fruits_data: List[FruitCreate]) -> List[Fruit]:
+        try:
+            with transaction(self.repository.db) as session:
+                created_fruits = []
+                for fruit_data in fruits_data:
+                    fruit = Fruit(name=fruit_data.name)
+                    session.add(fruit)
+                    created_fruits.append(fruit)
+                session.flush()
+                for fruit in created_fruits:
+                    session.refresh(fruit)
+                return created_fruits
+        except SQLAlchemyError as e:
+            logger.error(f"Database error in create_multiple_fruits: {e}")
+            raise raise_service_unavailable("Database service is currently unavailable")
+
+    def bulk_update_fruits(self, updates: List[tuple[int, FruitUpdate]]) -> List[Fruit]:
+        try:
+            with transaction(self.repository.db) as session:
+                updated_fruits = []
+                for fruit_id, fruit_data in updates:
+                    fruit = self.repository.get_by_id(fruit_id)
+                    if not fruit:
+                        raise raise_not_found("Fruit", fruit_id)
+                    fruit.name = fruit_data.name
+                    updated_fruits.append(fruit)
+                return updated_fruits
+        except SQLAlchemyError as e:
+            logger.error(f"Database error in bulk_update_fruits: {e}")
             raise raise_service_unavailable("Database service is currently unavailable")

@@ -1,27 +1,19 @@
-"""
-FastAPI application entry point.
-"""
-
 import logging
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from .config.logging import setup_logging
 from .config.settings import settings
 from .database import engine
 from .models import Base
 from .routers import fruits
 
-# Logging yapılandırmasını başlat
 setup_logging()
 logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
     if engine is not None:
         try:
             Base.metadata.create_all(bind=engine)
@@ -30,13 +22,8 @@ async def lifespan(app: FastAPI):
             logger.error(f"Failed to create database tables: {e}")
             logger.warning("Server will continue without database connection")
     else:
-        logger.warning(
-            "Database engine is not available. Server will continue without database."
-        )
-
+        logger.warning("Database engine is not available. Server will continue without database.")
     yield
-
-    # Shutdown
     logger.info("Shutting down application")
 
 
@@ -66,7 +53,6 @@ async def read_root():
 @app.get("/health")
 async def health_check():
     from sqlalchemy import text
-
     from .database import engine
 
     if engine is not None:
