@@ -76,3 +76,19 @@ class AuthService:
                 detail="User not found"
             )
         return UserResponse.model_validate(user)
+
+    def logout(self, response: Response) -> dict:
+        """Logout user by clearing cookies"""
+        cookie_kwargs = {
+            "httponly": True,
+            "secure": settings.cookie_secure,
+            "samesite": settings.cookie_same_site,
+        }
+        if settings.cookie_domain:
+            cookie_kwargs["domain"] = settings.cookie_domain
+        
+        # Clear cookies by setting max_age to 0
+        response.delete_cookie(key="access_token", **cookie_kwargs)
+        response.delete_cookie(key="refresh_token", **cookie_kwargs)
+        
+        return {"message": "Logout successful"}

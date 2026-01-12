@@ -1,7 +1,9 @@
 import logging
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from .config.logging import setup_logging
 from .config.settings import settings
 from .database import engine
@@ -22,7 +24,9 @@ async def lifespan(_app: FastAPI):
             logger.error(f"Failed to create database tables: {e}")
             logger.warning("Server will continue without database connection")
     else:
-        logger.warning("Database engine is not available. Server will continue without database.")
+        logger.warning(
+            "Database engine is not available. Server will continue without database."
+        )
     yield
     logger.info("Shutting down application")
 
@@ -42,7 +46,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(auth.router, prefix="/api")
+app.include_router(auth.router, prefix="/api/auth")
 app.include_router(fruits.router, prefix="/api")
 
 
@@ -50,9 +54,11 @@ app.include_router(fruits.router, prefix="/api")
 async def read_root():
     return {"Hello": "World"}
 
+
 @app.get("/health")
 async def health_check():
     from sqlalchemy import text
+
     from .database import engine
 
     if engine is not None:
@@ -63,4 +69,3 @@ async def health_check():
         except Exception as e:
             return {"status": "healthy", "database": "disconnected", "error": str(e)}
     return {"status": "healthy", "database": "not configured"}
-

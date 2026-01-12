@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
-from ..core.dependencies import get_auth_service, get_current_user
+from ..core.dependencies import get_current_user
 from ..database import get_db
 from ..schemas.auth_schema import TokenResponse, UserCreate, UserLogin, UserResponse
 from ..services.auth_service import AuthService
@@ -15,11 +15,16 @@ def get_service(db: Session = Depends(get_db)) -> AuthService:
     except ConnectionError:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Database connection is not available"
+            detail="Database connection is not available",
         )
 
 
-@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["auth"])
+@router.post(
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    tags=["auth"],
+)
 async def register(user_data: UserCreate, service: AuthService = Depends(get_service)):
     return service.register(user_data)
 
@@ -28,7 +33,7 @@ async def register(user_data: UserCreate, service: AuthService = Depends(get_ser
 async def login(
     login_data: UserLogin,
     response: Response,
-    service: AuthService = Depends(get_service)
+    service: AuthService = Depends(get_service),
 ):
     return service.login(login_data, response)
 
@@ -36,3 +41,11 @@ async def login(
 @router.get("/me", response_model=UserResponse, tags=["auth"])
 async def get_me(current_user: UserResponse = Depends(get_current_user)):
     return current_user
+
+
+@router.post("/logout", tags=["auth"])
+async def logout(
+    response: Response,
+    service: AuthService = Depends(get_service),
+):
+    return service.logout(response)
