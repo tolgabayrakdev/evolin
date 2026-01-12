@@ -4,7 +4,9 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.orm import Session
 
+from ..core.dependencies import get_current_user
 from ..database import get_db
+from ..schemas.auth_schema import UserResponse
 from ..schemas.fruit_schema import FruitCreate, FruitResponse, FruitUpdate
 from ..services.fruit_service import FruitService
 
@@ -22,7 +24,9 @@ def get_service(db: Session = Depends(get_db)) -> FruitService:
     tags=["fruits"],
 )
 async def create_fruit(
-    fruit: FruitCreate, service: FruitService = Depends(get_service)
+    fruit: FruitCreate,
+    service: FruitService = Depends(get_service),
+    _current_user: UserResponse = Depends(get_current_user),
 ):
     return service.create_fruit(fruit)
 
@@ -43,7 +47,10 @@ async def get_fruit(fruit_id: UUID, service: FruitService = Depends(get_service)
 
 @router.put("/fruits/{fruit_id}", response_model=FruitResponse, tags=["fruits"])
 async def update_fruit(
-    fruit_id: UUID, fruit: FruitUpdate, service: FruitService = Depends(get_service)
+    fruit_id: UUID,
+    fruit: FruitUpdate,
+    service: FruitService = Depends(get_service),
+    _current_user: UserResponse = Depends(get_current_user),
 ):
     return service.update_fruit(fruit_id, fruit)
 
@@ -51,5 +58,9 @@ async def update_fruit(
 @router.delete(
     "/fruits/{fruit_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["fruits"]
 )
-async def delete_fruit(fruit_id: UUID, service: FruitService = Depends(get_service)):
+async def delete_fruit(
+    fruit_id: UUID,
+    service: FruitService = Depends(get_service),
+    _current_user: UserResponse = Depends(get_current_user),
+):
     service.delete_fruit(fruit_id)
