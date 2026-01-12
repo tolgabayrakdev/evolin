@@ -4,8 +4,8 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..services.fruits import FruitService
-from ..schemas.fruits import FruitCreate, FruitUpdate, FruitResponse
+from ..services.fruit_service import FruitService
+from ..schemas.fruit_schema import FruitCreate, FruitUpdate, FruitResponse
 from ..core.exceptions import raise_service_unavailable
 
 router = APIRouter()

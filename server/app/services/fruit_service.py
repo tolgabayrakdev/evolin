@@ -6,8 +6,8 @@ from sqlalchemy.orm import Session
 from ..core.exceptions import raise_not_found
 from ..core.transaction import transaction
 from ..models import Fruit
-from ..repositories.fruits import FruitRepository
-from ..schemas.fruits import FruitCreate, FruitUpdate
+from ..repositories.fruit_repository import FruitRepository
+from ..schemas.fruit_schema import FruitCreate, FruitUpdate
 
 
 class FruitService:
