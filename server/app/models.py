@@ -37,5 +37,5 @@ class User(Base, TimestampMixin):
     id: Mapped[UUID] = mapped_column(
         PostgresUUID(as_uuid=True), primary_key=True, default=uuid4, index=True
     )
-    email = mapped_column(String(255), nullable=False, index=True)
-    password = mapped_column(String(255), nullable=False, index=True)
+    email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
+    password: Mapped[str] = mapped_column(String(255), nullable=False)

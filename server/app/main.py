@@ -6,7 +6,7 @@ from .config.logging import setup_logging
 from .config.settings import settings
 from .database import engine
 from .models import Base
-from .routers import fruits
+from .routers import auth, fruits
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -42,6 +42,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, prefix="/api")
 app.include_router(fruits.router, prefix="/api")
 
 

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Optional, Union
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
+    
+    # Cookie Settings
+    cookie_secure: bool = False  # Set to True in production with HTTPS
+    cookie_same_site: str = "lax"  # lax, strict, or none
+    cookie_domain: Optional[str] = None
 
     @property
     def cors_origins_list(self) -> List[str]:

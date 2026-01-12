@@ -1,0 +1,38 @@
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from sqlalchemy.orm import Session
+
+from ..core.dependencies import get_auth_service, get_current_user
+from ..database import get_db
+from ..schemas.auth_schema import TokenResponse, UserCreate, UserLogin, UserResponse
+from ..services.auth_service import AuthService
+
+router = APIRouter()
+
+
+def get_service(db: Session = Depends(get_db)) -> AuthService:
+    try:
+        return AuthService(db)
+    except ConnectionError:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database connection is not available"
+        )
+
+
+@router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["auth"])
+async def register(user_data: UserCreate, service: AuthService = Depends(get_service)):
+    return service.register(user_data)
+
+
+@router.post("/login", response_model=TokenResponse, tags=["auth"])
+async def login(
+    login_data: UserLogin,
+    response: Response,
+    service: AuthService = Depends(get_service)
+):
+    return service.login(login_data, response)
+
+
+@router.get("/me", response_model=UserResponse, tags=["auth"])
+async def get_me(current_user: UserResponse = Depends(get_current_user)):
+    return current_user
