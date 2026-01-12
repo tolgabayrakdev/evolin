@@ -32,7 +32,7 @@ export default function SignUp() {
 
   const handleSubmit = async (values: SignUpFormValues) => {
     setIsSubmitting(true);
-    
+
     const result = await register({
       email: values.email,
       password: values.password,
@@ -46,12 +46,14 @@ export default function SignUp() {
         title: "Success",
         message: "Account created successfully!",
         color: "green",
+        withCloseButton: false,
       });
     } else {
       notifications.show({
         title: "Error",
         message: result.error || "Failed to create account",
         color: "red",
+        withCloseButton: false,
       });
     }
   };

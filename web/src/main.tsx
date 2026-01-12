@@ -18,7 +18,7 @@ const theme = createTheme({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <Notifications position="top-center" />
+      <Notifications position="bottom-center" />
       <RouterProvider router={router} />
     </MantineProvider>
   </StrictMode>,

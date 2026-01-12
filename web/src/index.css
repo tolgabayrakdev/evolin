@@ -1,0 +1,9 @@
+.desktop-sidebar {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .desktop-sidebar {
+    display: block !important;
+  }
+}

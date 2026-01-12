@@ -18,6 +18,7 @@ interface AuthState {
   user: User | null;
   checkAuth: () => Promise<boolean>;
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
   setLoading: (loading: boolean) => void;
   setAuthenticated: (authenticated: boolean, user?: User | null) => void;
 }
@@ -92,6 +93,25 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     } catch (error) {
       return { success: false, error: "Network error. Please try again." };
+    }
+  },
+
+  logout: async (): Promise<void> => {
+    try {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      // Ignore errors on logout
+    } finally {
+      set({
+        isAuthenticated: false,
+        user: null,
+      });
     }
   },
 }));
