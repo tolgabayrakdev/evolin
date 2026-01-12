@@ -23,7 +23,7 @@ class FruitService:
         if not fruit:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Fruit with id {fruit_id} not found"
+                detail=f"Fruit with id {fruit_id} not found",
             )
         return fruit
 
@@ -35,7 +35,7 @@ class FruitService:
         if not fruit:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Fruit with id {fruit_id} not found"
+                detail=f"Fruit with id {fruit_id} not found",
             )
         fruit.name = fruit_data.name
         return self.repository.update(fruit)
@@ -45,7 +45,7 @@ class FruitService:
         if not fruit:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Fruit with id {fruit_id} not found"
+                detail=f"Fruit with id {fruit_id} not found",
             )
         self.repository.delete(fruit)
 
@@ -61,7 +61,9 @@ class FruitService:
                 session.refresh(fruit)
             return created_fruits
 
-    def bulk_update_fruits(self, updates: List[tuple[UUID, FruitUpdate]]) -> List[Fruit]:
+    def bulk_update_fruits(
+        self, updates: List[tuple[UUID, FruitUpdate]]
+    ) -> List[Fruit]:
         with transaction(self.repository.db):
             updated_fruits = []
             for fruit_id, fruit_data in updates:
@@ -69,7 +71,7 @@ class FruitService:
                 if not fruit:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND,
-                        detail=f"Fruit with id {fruit_id} not found"
+                        detail=f"Fruit with id {fruit_id} not found",
                     )
                 fruit.name = fruit_data.name
                 updated_fruits.append(fruit)

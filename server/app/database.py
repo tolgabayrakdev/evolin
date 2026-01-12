@@ -13,7 +13,7 @@ try:
         pool_pre_ping=True,
         pool_size=10,
         max_overflow=20,
-        connect_args={"connect_timeout": 5}
+        connect_args={"connect_timeout": 5},
     )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     logger.info("Database engine created successfully")
@@ -26,7 +26,7 @@ except Exception as e:
 def get_db():
     if SessionLocal is None:
         raise ConnectionError("Database connection is not available")
-    
+
     db = SessionLocal()
     try:
         yield db
