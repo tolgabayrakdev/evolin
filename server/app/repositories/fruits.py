@@ -1,7 +1,7 @@
-from typing import List, Optional
+from typing import Optional
+
 from sqlalchemy.orm import Session
 
-from server.app.models import Fruit
 from ..models import Fruit
 from .base import BaseRepository
 
@@ -13,7 +13,9 @@ class FruitRepository(BaseRepository[Fruit]):
     def get_by_name(self, name: str) -> Optional[Fruit]:
         return self.db.query(Fruit).filter(Fruit.name.ilike(f"%{name}%")).first()
 
-    def search_by_name(self, search_term: str, skip: int = 0, limit: int = 100) -> list[type[Fruit]]:
+    def search_by_name(
+        self, search_term: str, skip: int = 0, limit: int = 100
+    ) -> list[Fruit]:
         return (
             self.db.query(Fruit)
             .filter(Fruit.name.ilike(f"%{search_term}%"))
@@ -22,7 +24,7 @@ class FruitRepository(BaseRepository[Fruit]):
             .all()
         )
 
-    def get_all_sorted_by_name(self, skip: int = 0, limit: int = 100) -> list[type[Fruit]]:
+    def get_all_sorted_by_name(self, skip: int = 0, limit: int = 100) -> list[Fruit]:
         return (
             self.db.query(Fruit)
             .order_by(Fruit.name.asc())

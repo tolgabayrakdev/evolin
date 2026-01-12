@@ -1,5 +1,6 @@
 import logging
 from typing import Generic, List, Optional, Type, TypeVar
+
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Session
 
