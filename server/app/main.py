@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     if engine is not None:
         try:
             Base.metadata.create_all(bind=engine)
@@ -49,7 +49,6 @@ app.include_router(fruits.router, prefix="/api")
 async def read_root():
     return {"Hello": "World"}
 
-
 @app.get("/health")
 async def health_check():
     from sqlalchemy import text
@@ -63,3 +62,4 @@ async def health_check():
         except Exception as e:
             return {"status": "healthy", "database": "disconnected", "error": str(e)}
     return {"status": "healthy", "database": "not configured"}
+
