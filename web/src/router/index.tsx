@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router";
-import Home from "../pages/home";
-import NotFound from "../pages/not-found";
-import SignIn from "../pages/auth/sign-in";
-import SignUp from "../pages/auth/sign-up";
-import ForgotPassword from "../pages/auth/forgot-password";
+import Home from "@/pages/home";
+import NotFound from "@/pages/not-found";
+import SignIn from "@/pages/auth/sign-in";
+import SignUp from "@/pages/auth/sign-up";
+import ForgotPassword from "@/pages/auth/forgot-password";
 
 export const router = createBrowserRouter([
   {

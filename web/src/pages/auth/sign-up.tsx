@@ -1,35 +1,82 @@
-import { Container, Title, TextInput, PasswordInput, Button, Stack, Anchor, Text } from "@mantine/core";
+import { useState } from "react";
+import { Container, Title, TextInput, PasswordInput, Button, Stack, Anchor, Text, Paper } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { Link } from "react-router";
+import { useAuthStore } from "@/store/auth-store";
 
 interface SignUpFormValues {
-  name: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
 
 export default function SignUp() {
+  const { register } = useAuthStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const form = useForm<SignUpFormValues>({
     initialValues: {
-      name: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
     validate: {
-      name: (value) => (value.length < 2 ? "Name must be at least 2 characters" : null),
       email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
-      password: (value) => (value.length < 6 ? "Password must be at least 6 characters" : null),
+      password: (value) => (value.length < 8 ? "Password must be at least 8 characters" : null),
       confirmPassword: (value, values) =>
         value !== values.password ? "Passwords do not match" : null,
     },
   });
 
-  const handleSubmit = (values: SignUpFormValues) => {
-    console.log(values);
-    // TODO: Implement sign up logic
+  const handleSubmit = async (values: SignUpFormValues) => {
+    setIsSubmitting(true);
+    
+    const result = await register({
+      email: values.email,
+      password: values.password,
+    });
+
+    setIsSubmitting(false);
+
+    if (result.success) {
+      setIsSuccess(true);
+      notifications.show({
+        title: "Success",
+        message: "Account created successfully!",
+        color: "green",
+      });
+    } else {
+      notifications.show({
+        title: "Error",
+        message: result.error || "Failed to create account",
+        color: "red",
+      });
+    }
   };
+
+  if (isSuccess) {
+    return (
+      <Container size={420} style={{ marginTop: 80 }}>
+        <Paper p="xl" radius="md" withBorder>
+          <Stack gap="md" align="center">
+            <Title ta="center" order={2}>
+              Account Created Successfully!
+            </Title>
+            <Text ta="center" c="dimmed">
+              Your account has been created. You can now sign in.
+            </Text>
+            <Link
+              to="/sign-in"
+            >
+              Sign In
+            </Link>
+          </Stack>
+        </Paper>
+      </Container>
+    );
+  }
 
   return (
     <Container size={420} style={{ marginTop: 80 }}>
@@ -39,13 +86,6 @@ export default function SignUp() {
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
-          <TextInput
-            label="Name"
-            placeholder="Enter your name"
-            required
-            {...form.getInputProps("name")}
-          />
-
           <TextInput
             label="Email"
             placeholder="example@email.com"
@@ -67,7 +107,7 @@ export default function SignUp() {
             {...form.getInputProps("confirmPassword")}
           />
 
-          <Button type="submit" fullWidth mt="md">
+          <Button type="submit" fullWidth mt="md" loading={isSubmitting}>
             Sign Up
           </Button>
 
