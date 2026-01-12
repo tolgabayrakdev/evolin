@@ -18,11 +18,11 @@ export default function SignUp() {
       confirmPassword: "",
     },
     validate: {
-      name: (value) => (value.length < 2 ? "İsim en az 2 karakter olmalıdır" : null),
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Geçersiz email"),
-      password: (value) => (value.length < 6 ? "Şifre en az 6 karakter olmalıdır" : null),
+      name: (value) => (value.length < 2 ? "Name must be at least 2 characters" : null),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: (value) => (value.length < 6 ? "Password must be at least 6 characters" : null),
       confirmPassword: (value, values) =>
-        value !== values.password ? "Şifreler eşleşmiyor" : null,
+        value !== values.password ? "Passwords do not match" : null,
     },
   });
 
@@ -34,47 +34,47 @@ export default function SignUp() {
   return (
     <Container size={420} style={{ marginTop: 80 }}>
       <Title ta="center" mb="xl">
-        Kayıt Ol
+        Sign Up
       </Title>
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
           <TextInput
-            label="İsim"
-            placeholder="Adınızı girin"
+            label="Name"
+            placeholder="Enter your name"
             required
             {...form.getInputProps("name")}
           />
 
           <TextInput
             label="Email"
-            placeholder="ornek@email.com"
+            placeholder="example@email.com"
             required
             {...form.getInputProps("email")}
           />
 
           <PasswordInput
-            label="Şifre"
-            placeholder="Şifrenizi girin"
+            label="Password"
+            placeholder="Enter your password"
             required
             {...form.getInputProps("password")}
           />
 
           <PasswordInput
-            label="Şifre Tekrar"
-            placeholder="Şifrenizi tekrar girin"
+            label="Confirm Password"
+            placeholder="Re-enter your password"
             required
             {...form.getInputProps("confirmPassword")}
           />
 
           <Button type="submit" fullWidth mt="md">
-            Kayıt Ol
+            Sign Up
           </Button>
 
           <Text ta="center" mt="md">
-            Zaten hesabınız var mı?{" "}
+            Already have an account?{" "}
             <Anchor component={Link} to="/sign-in">
-              Giriş Yap
+              Sign In
             </Anchor>
           </Text>
         </Stack>

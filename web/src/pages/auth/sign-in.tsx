@@ -14,8 +14,8 @@ export default function SignIn() {
       password: "",
     },
     validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Geçersiz email"),
-      password: (value) => (value.length < 6 ? "Şifre en az 6 karakter olmalıdır" : null),
+      email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      password: (value) => (value.length < 6 ? "Password must be at least 6 characters" : null),
     },
   });
 
@@ -27,37 +27,37 @@ export default function SignIn() {
   return (
     <Container size={420} style={{ marginTop: 80 }}>
       <Title ta="center" mb="xl">
-        Giriş Yap
+        Sign In
       </Title>
 
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack gap="md">
           <TextInput
             label="Email"
-            placeholder="ornek@email.com"
+            placeholder="example@email.com"
             required
             {...form.getInputProps("email")}
           />
 
           <PasswordInput
-            label="Şifre"
-            placeholder="Şifrenizi girin"
+            label="Password"
+            placeholder="Enter your password"
             required
             {...form.getInputProps("password")}
           />
 
           <Anchor component={Link} to="/forgot-password" size="sm" ta="right">
-            Şifremi unuttum
+            Forgot password
           </Anchor>
 
           <Button type="submit" fullWidth mt="md">
-            Giriş Yap
+            Sign In
           </Button>
 
           <Text ta="center" mt="md">
-            Hesabınız yok mu?{" "}
+            Don't have an account?{" "}
             <Anchor component={Link} to="/sign-up">
-              Kayıt Ol
+              Sign Up
             </Anchor>
           </Text>
         </Stack>
