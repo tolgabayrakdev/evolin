@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from ..models import Fruit
-from .base import BaseRepository
+from .base_repository import BaseRepository
 
 
 class FruitRepository(BaseRepository[Fruit]):

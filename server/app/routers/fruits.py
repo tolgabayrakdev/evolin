@@ -1,12 +1,11 @@
 from typing import List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..services.fruit_service import FruitService
 from ..schemas.fruit_schema import FruitCreate, FruitUpdate, FruitResponse
-from ..core.exceptions import raise_service_unavailable
 
 router = APIRouter()
 
@@ -15,7 +14,10 @@ def get_service(db: Session = Depends(get_db)) -> FruitService:
     try:
         return FruitService(db)
     except ConnectionError:
-        raise raise_service_unavailable("Database connection is not available")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Database connection is not available"
+        )
 
 
 @router.post("/fruits", response_model=FruitResponse, status_code=status.HTTP_201_CREATED, tags=["fruits"])

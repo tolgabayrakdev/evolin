@@ -1,9 +1,9 @@
 from typing import List
 from uuid import UUID
 
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from ..core.exceptions import raise_not_found
 from ..core.transaction import transaction
 from ..models import Fruit
 from ..repositories.fruit_repository import FruitRepository
@@ -21,7 +21,10 @@ class FruitService:
     def get_fruit_by_id(self, fruit_id: UUID) -> Fruit:
         fruit = self.repository.get_by_id(fruit_id)
         if not fruit:
-            raise raise_not_found("Fruit", fruit_id)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Fruit with id {fruit_id} not found"
+            )
         return fruit
 
     def get_all_fruits(self, skip: int = 0, limit: int = 100) -> List[Fruit]:
@@ -30,14 +33,20 @@ class FruitService:
     def update_fruit(self, fruit_id: UUID, fruit_data: FruitUpdate) -> Fruit:
         fruit = self.repository.get_by_id(fruit_id)
         if not fruit:
-            raise raise_not_found("Fruit", fruit_id)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Fruit with id {fruit_id} not found"
+            )
         fruit.name = fruit_data.name
         return self.repository.update(fruit)
 
     def delete_fruit(self, fruit_id: UUID) -> None:
         fruit = self.repository.get_by_id(fruit_id)
         if not fruit:
-            raise raise_not_found("Fruit", fruit_id)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Fruit with id {fruit_id} not found"
+            )
         self.repository.delete(fruit)
 
     def create_multiple_fruits(self, fruits_data: List[FruitCreate]) -> List[Fruit]:
@@ -58,7 +67,10 @@ class FruitService:
             for fruit_id, fruit_data in updates:
                 fruit = self.repository.get_by_id(fruit_id)
                 if not fruit:
-                    raise raise_not_found("Fruit", fruit_id)
+                    raise HTTPException(
+                        status_code=status.HTTP_404_NOT_FOUND,
+                        detail=f"Fruit with id {fruit_id} not found"
+                    )
                 fruit.name = fruit_data.name
                 updated_fruits.append(fruit)
             return updated_fruits
