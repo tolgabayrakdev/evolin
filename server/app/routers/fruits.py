@@ -1,4 +1,6 @@
 from typing import List
+from uuid import UUID
+
 from fastapi import APIRouter, Depends, status, Query
 from sqlalchemy.orm import Session
 from ..database import get_db
@@ -31,15 +33,15 @@ async def get_fruits(
 
 
 @router.get("/fruits/{fruit_id}", response_model=FruitResponse, tags=["fruits"])
-async def get_fruit(fruit_id: int, service: FruitService = Depends(get_service)):
+async def get_fruit(fruit_id: UUID, service: FruitService = Depends(get_service)):
     return service.get_fruit_by_id(fruit_id)
 
 
 @router.put("/fruits/{fruit_id}", response_model=FruitResponse, tags=["fruits"])
-async def update_fruit(fruit_id: int, fruit: FruitUpdate, service: FruitService = Depends(get_service)):
+async def update_fruit(fruit_id: UUID, fruit: FruitUpdate, service: FruitService = Depends(get_service)):
     return service.update_fruit(fruit_id, fruit)
 
 
 @router.delete("/fruits/{fruit_id}", status_code=status.HTTP_204_NO_CONTENT, tags=["fruits"])
-async def delete_fruit(fruit_id: int, service: FruitService = Depends(get_service)):
+async def delete_fruit(fruit_id: UUID, service: FruitService = Depends(get_service)):
     service.delete_fruit(fruit_id)

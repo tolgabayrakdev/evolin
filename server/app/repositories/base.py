@@ -1,5 +1,6 @@
 import logging
-from typing import Generic, List, Optional, Type, TypeVar
+from typing import Generic, List, Optional, Type, TypeVar, Union
+from uuid import UUID
 
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import DeclarativeBase, Session
@@ -30,7 +31,7 @@ class BaseRepository(Generic[ModelType]):
                 self.db.rollback()
             raise
 
-    def get_by_id(self, instance_id: int) -> Optional[ModelType]:
+    def get_by_id(self, instance_id: Union[int, UUID]) -> Optional[ModelType]:
         try:
             return (
                 self.db.query(self.model)

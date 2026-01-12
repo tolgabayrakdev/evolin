@@ -1,4 +1,6 @@
 from datetime import datetime
+from uuid import UUID
+
 from pydantic import BaseModel, Field, field_validator
 
 
@@ -29,7 +31,7 @@ class FruitUpdate(BaseModel):
 
 
 class FruitResponse(FruitBase):
-    id: int
+    id: UUID
     created_at: datetime
     updated_at: datetime
 
