@@ -30,6 +30,7 @@ def login():
         secure=False,  # Set to True in production with HTTPS
         samesite="Lax",
         max_age=3600,  # 1 hour
+        path="/",
     )
     response.set_cookie(
         "refresh_token",
@@ -38,6 +39,7 @@ def login():
         secure=False,  # Set to True in production with HTTPS
         samesite="Lax",
         max_age=604800,  # 7 days
+        path="/",
     )
 
     return response, 200
