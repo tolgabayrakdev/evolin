@@ -16,8 +16,9 @@ class UserRepository(BaseRepository[User]):
         )
 
     def create(self, email: str, password: str) -> User:
-        """Create a new user."""
-        user = self.model(email=email, password=password)
+        user = self.model()
+        user.email = email
+        user.password = password
         self.db.session.add(user)
         self.db.session.flush()
         return user
