@@ -13,10 +13,6 @@ class AuthRepository(BaseRepository[User]):
     def get_by_email(self, email: str) -> Optional[User]:
         return self.db.query(User).filter(User.email == email).first()
 
-    def verify_user_credentials(self, email: str, password: str) -> Optional[User]:
-        user = self.get_by_email(email)
-        return user
-
     def create_user(self, email: str, hashed_password: str) -> User:
         user = User(email=email, password=hashed_password)
         return self.create(user)

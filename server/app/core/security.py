@@ -51,10 +51,8 @@ def verify_token(token: str, token_type: str = "access") -> Optional[dict]:
 
 
 def hash_password(password: str) -> str:
-    """Hash a password"""
     return password_hasher.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify a password against its hash"""
     return password_hasher.verify(plain_password, hashed_password)
