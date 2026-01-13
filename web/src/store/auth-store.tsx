@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         });
         return false;
       }
-    } catch (error) {
+    } catch {
       set({
         isAuthenticated: false,
         user: null,
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthState>((set) => ({
         const errorData = await response.json().catch(() => ({ detail: "Registration failed" }));
         return { success: false, error: errorData.detail || "Registration failed" };
       }
-    } catch (error) {
+    } catch {
       return { success: false, error: "Network error. Please try again." };
     }
   },
@@ -105,7 +105,7 @@ export const useAuthStore = create<AuthState>((set) => ({
           "Content-Type": "application/json",
         },
       });
-    } catch (error) {
+    } catch {
       // Ignore errors on logout
     } finally {
       set({
