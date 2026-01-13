@@ -9,7 +9,6 @@ auth_service = AuthService()
 
 @auth_router.route("/register", methods=["POST"])
 def register():
-    """Register a new user."""
     data = request.get_json()
     auth_service.register(data)
 
@@ -18,7 +17,6 @@ def register():
 
 @auth_router.route("/login", methods=["POST"])
 def login():
-    """Login user and set tokens as httpOnly cookies."""
     data = request.get_json()
     result = auth_service.login(data.get("email"), data.get("password"))
 
@@ -48,7 +46,6 @@ def login():
 @auth_router.route("/logout", methods=["POST"])
 @require_auth
 def logout():
-    """Logout user by clearing cookies."""
     response = make_response(jsonify({"message": "Logout successful"}))
     
     # Clear cookies

@@ -5,7 +5,6 @@ from flask import current_app
 
 
 def generate_access_token(user_id: int, email: str) -> str:
-    """Generate JWT access token."""
     payload = {
         "user_id": user_id,
         "email": email,
@@ -17,7 +16,6 @@ def generate_access_token(user_id: int, email: str) -> str:
 
 
 def generate_refresh_token(user_id: int, email: str) -> str:
-    """Generate JWT refresh token."""
     payload = {
         "user_id": user_id,
         "email": email,
@@ -29,7 +27,6 @@ def generate_refresh_token(user_id: int, email: str) -> str:
 
 
 def verify_token(token: str) -> Optional[Dict]:
-    """Verify and decode JWT token."""
     try:
         payload = jwt.decode(
             token, current_app.config["JWT_SECRET_KEY"], algorithms=["HS256"]

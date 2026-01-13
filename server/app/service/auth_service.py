@@ -13,7 +13,6 @@ class AuthService:
         self.user_repository = UserRepository()
 
     def login(self, email: str, password: str):
-        """Authenticate user and return tokens."""
         if not email or not password:
             raise ValueError("Email and password are required")
 
@@ -34,7 +33,6 @@ class AuthService:
         }
 
     def register(self, user_data: dict):
-        """Register a new user."""
         email = user_data.get("email")
         password = user_data.get("password")
 
