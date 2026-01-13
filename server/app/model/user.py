@@ -10,4 +10,4 @@ class User(db.Model):
     password: Mapped[str] = mapped_column()
 
     def to_dict(self):
-        return {"id": self.id, "emmail": self.email}
+        return {"id": self.id, "email": self.email}
